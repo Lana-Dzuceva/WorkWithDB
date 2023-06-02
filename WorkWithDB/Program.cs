@@ -83,10 +83,16 @@ namespace WorkWithDB
                "    ON DELETE NO ACTION" +
                "    ON UPDATE NO ACTION);"
             };
-            foreach (var command in createTableCommands)
+            Console.WriteLine("do you want create data base? (tipe \"yes\" or \"no\")");
+            var ans = Console.ReadLine();
+            if (ans == "yes")
             {
-                send_request(Connect, command);
+                foreach (var command in createTableCommands)
+                {
+                    send_request(Connect, command);
+                }
             }
+            
             // не работает
             //for (int i = 0; i < 5; i++)
             //{
