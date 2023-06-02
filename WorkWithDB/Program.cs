@@ -34,7 +34,7 @@ namespace WorkWithDB
             string password = ""; // Пароль пользователя
 
             string Connect = "Database=" + database + ";Datasource=" + host + ";User=" + user + ";Password=" + password;
-            List<string> commands = new List<string>
+            List<string> createTableCommands = new List<string>
             {
              "CREATE SCHEMA `anime` ;",
 
@@ -82,32 +82,77 @@ namespace WorkWithDB
                "    REFERENCES `anime`.`users` (`id`)" +
                "    ON DELETE NO ACTION" +
                "    ON UPDATE NO ACTION);"
-        };
+            };
+            foreach (var command in createTableCommands)
+            {
+                send_request(Connect, command);
+            }
+            // не работает
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    mysql_query.CommandText = "INSERT INTO `anime`.`anime` " +
+            //                    "(`title`, `release_year`)" +
+            //                    $" VALUES ('аниме{i}', '200{i}');";
+            //    mysql_result = mysql_query.ExecuteReader();
+            //    while (mysql_result.Read())
+            //    {
+            //        Console.WriteLine("{0}", mysql_result.GetString(1));
+            //    }
+            //}
 
-        // не работает
-        //for (int i = 0; i < 5; i++)
-        //{
 
-        //    mysql_query.CommandText = "INSERT INTO `anime`.`anime` " +
-        //                    "(`title`, `release_year`)" +
-        //                    $" VALUES ('аниме{i}', '200{i}');";
-        //    mysql_result = mysql_query.ExecuteReader();
-        //    while (mysql_result.Read())
-        //    {
-        //        Console.WriteLine("{0}", mysql_result.GetString(1));
-        //    }
-
-        //}
-
-
-        var userCommand = "";
-        Console.WriteLine("Привет дорогой гость тебе доступны команды 1 - добавить в таблицу,\n 2 - удалить,  0 - закончить все и выйти");
-
+            var userCommand = "";
+            string[] data;
+            var qqq = " 1 - добавить в таблицу,\n 2 - просмотреть данные 3- изменить запись,\n 4 - удалить запись  0 - закончить все и выйти";
+            Console.WriteLine("Привет дорогой гость тебе доступны команды " + qqq);
+            while (userCommand != "0")
+            {
+                userCommand = Console.ReadLine();
+                switch (userCommand)
+                {
+                    case "1":
+                        Console.WriteLine("table and columns. Separate by spaces.");
+                        data = Console.ReadLine().Split();
+                        if (data[0] == "anime")
+                        {
+                            send_request(Connect, "INSERT INTO `anime`.`anime` " +
+                                "(`title`, `release_year`)" +
+                                $" VALUES ('{data[1]}', '{data[2]}');");
+                        }
+                        break;
+                    case "2":
+                        Console.WriteLine("table and columns or * to get all columns. Separate by spaces.");
+                        data = Console.ReadLine().Split();
+                        if (data[0] == "anime")
+                        {
+                            send_request(Connect, $"SELECT {string.Join(", ", data.Skip(1))} FROM `anime`.`anime`;");
+                        }
+                        break;
+                    case "3":
+                        Console.WriteLine("table, column, id row, which you want to update, and new value. Separate by spaces.");
+                        data = Console.ReadLine().Split();
+                        if (data[0] == "anime")
+                        {
+                            send_request(Connect, $"UPDATE `anime`.`anime` SET `{data[1]}` = '{3}' WHERE (`id` = '{2}');");
+                        }
+                        break;
+                    case "4":
+                        Console.WriteLine("table, id row, which you want to delete. Separate by spaces.");
+                        data = Console.ReadLine().Split();
+                        if (data[0] == "anime")
+                        {
+                            send_request(Connect, $"DELETE FROM `anime`.`anime` WHERE (`id` = '{data[1]}');");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
 
 
 
 
 
         }
-}
+    }
 }
